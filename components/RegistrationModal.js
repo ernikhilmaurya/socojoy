@@ -8,9 +8,12 @@ import {
   StyleSheet,
   Image,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
+import axios from "axios";
+import BASE_URL from "../constants/constants";
 
 export default function RegistrationModal({ visible, onClose, onComplete }) {
   const [currentStep, setCurrentStep] = useState(1);
@@ -18,10 +21,40 @@ export default function RegistrationModal({ visible, onClose, onComplete }) {
   const [dob, setDob] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [username, setUsername] = useState("");
+  const [isUsernameAvailable, setIsUsernameAvailable] = useState(null); // 🆕
+  const [checkingUsername, setCheckingUsername] = useState(false);
   const [profilePic, setProfilePic] = useState(null);
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [foodPreference, setFoodPreference] = useState("");
 
+  // 🆕 validate username via API
+  const checkUsernameAvailability = async (name) => {
+    setCheckingUsername(true);
+    try {
+      const res = await axios.get(
+        `${BASE_URL}check-username?username=${encodeURIComponent(name)}`
+      );
+      if (res.data.status === "success" && res.data.data.available) {
+        setIsUsernameAvailable(true);
+      } else {
+        setIsUsernameAvailable(false);
+      }
+    } catch (error) {
+      console.error("Username check failed:", error);
+      setIsUsernameAvailable(false);
+    }
+    setCheckingUsername(false);
+  };
+
+  const onUsernameChange = (text) => {
+    setUsername(text);
+    if (text.trim().length > 2) {
+      // check only if length > 2
+      checkUsernameAvailability(text.trim());
+    } else {
+      setIsUsernameAvailable(null);
+    }
+  };
   // ✅ Validation
   const isStep1Valid =
     fullName.trim() !== "" && dob.trim() !== "" && username.trim() !== "";
@@ -57,6 +90,20 @@ export default function RegistrationModal({ visible, onClose, onComplete }) {
     }
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 0.7,
+    });
+    if (!result.canceled) {
+      setProfilePic(result.assets[0].uri);
+    }
+  };
+  const openCamera = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("Permission to access camera is required!");
+      return;
+    }
+    const result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       quality: 0.7,
     });
@@ -112,8 +159,15 @@ export default function RegistrationModal({ visible, onClose, onComplete }) {
                 placeholder="Username"
                 style={styles.input}
                 value={username}
-                onChangeText={setUsername}
+                onChangeText={onUsernameChange}
               />
+              {checkingUsername ? (
+                <ActivityIndicator size="small" color="#4B0B0C" />
+              ) : isUsernameAvailable === true ? (
+                <Text style={{ color: "green" }}>Username available</Text>
+              ) : isUsernameAvailable === false ? (
+                <Text style={{ color: "red" }}>Username taken</Text>
+              ) : null}
             </>
           )}
 
@@ -122,19 +176,26 @@ export default function RegistrationModal({ visible, onClose, onComplete }) {
               <Text style={styles.sectionTitle}>
                 Upload Profile Picture (optional)
               </Text>
-              <TouchableOpacity
-                style={styles.uploadBtn}
-                onPress={openImagePicker}
+              <View
+                style={{ flexDirection: "row", justifyContent: "space-around" }}
               >
-                {profilePic ? (
-                  <Image
-                    source={{ uri: profilePic }}
-                    style={styles.profileImage}
-                  />
-                ) : (
-                  <Text>Upload</Text>
-                )}
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.uploadBtn}
+                  onPress={openImagePicker}
+                >
+                  <Text>Gallery</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.uploadBtn} onPress={openCamera}>
+                  <Text>Camera</Text>
+                </TouchableOpacity>
+              </View>
+              {profilePic && (
+                <Image
+                  source={{ uri: profilePic }}
+                  style={styles.profileImage}
+                />
+              )}
+
               <View style={styles.checkboxRow}>
                 <TouchableOpacity
                   style={styles.checkbox}
@@ -242,7 +303,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
-  profileImage: { width: 80, height: 80, borderRadius: 40 },
+  profileImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    alignSelf: "center",
+    marginTop: 10,
+  },
   checkboxRow: { flexDirection: "row", alignItems: "center" },
   checkbox: {
     width: 20,

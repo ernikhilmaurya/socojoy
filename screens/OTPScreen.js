@@ -14,7 +14,7 @@ import axios from "axios";
 import BASE_URL from "../constants/constants";
 import RegistrationModal from "../components/RegistrationModal";
 
-export default function OTPScreen({ route }) {
+export default function OTPScreen({ route, navigation }) {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const inputs = useRef([]);
 
