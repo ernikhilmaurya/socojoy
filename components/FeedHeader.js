@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 20, // space below header
+    marginBottom: 20,
   },
   avatar: {
     width: 48,
@@ -32,6 +32,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: "700",
-    color: "#1F3C2E", // dark green like in design
+    color: "#1F3C2E",
   },
 });

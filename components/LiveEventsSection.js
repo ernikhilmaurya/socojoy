@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons"; // or use Feather, FontAwesome etc.
+import { Ionicons } from "@expo/vector-icons";
 
 const { width } = Dimensions.get("window");
 
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 24,
     left: "50%",
-    marginLeft: -15, // half of size to center horizontally
+    marginLeft: -15,
     width: 30,
     height: 30,
     borderRadius: 15,

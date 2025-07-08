@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { MaterialIcons } from "@expo/vector-icons"; // for verified badge icon
+import { MaterialIcons } from "@expo/vector-icons";
 
 const chefs = [
   {
@@ -70,7 +70,7 @@ export default function PopularChefsSection() {
           <View style={styles.chefCard}>
             {/* Gradient ring */}
             <LinearGradient
-              colors={["#FFD700", "#FF8C00", "#FF0080"]} // gold to orange-pink
+              colors={["#FFD700", "#FF8C00", "#FF0080"]}
               style={styles.gradientRing}
             >
               <Image source={{ uri: item.image }} style={styles.avatar} />

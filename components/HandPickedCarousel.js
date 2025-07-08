@@ -8,7 +8,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 const { width: viewportWidth } = Dimensions.get("window");
-const CARD_WIDTH = viewportWidth * 0.7; // adjust if needed
+const CARD_WIDTH = viewportWidth * 0.7;
 const CARD_HEIGHT = 250;
 
 const data = [

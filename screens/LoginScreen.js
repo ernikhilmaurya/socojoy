@@ -29,7 +29,6 @@ export default function LoginScreen({ navigation }) {
         "OTP Sent to entered number and valid for 10 mins",
         ToastAndroid.SHORT
       );
-      // console.log(res);
       navigation.navigate("OTP", { phone });
     } catch (error) {
       console.error(error);
@@ -83,9 +82,9 @@ export default function LoginScreen({ navigation }) {
           <InputBox
             placeholder="Enter Phone Number"
             keyboardType="phone-pad"
-            maxLength={10} // only 10 digits
+            maxLength={10}
             value={phone}
-            onChangeText={(text) => setPhone(text.replace(/[^0-9]/g, ""))} // remove non-digits
+            onChangeText={(text) => setPhone(text.replace(/[^0-9]/g, ""))}
           />
         </View>
 
@@ -144,8 +143,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     height: 50,
     marginBottom: 20,
-
-    // optional subtle shadow
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,

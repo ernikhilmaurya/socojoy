@@ -22,16 +22,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#F5F5F5",
-    borderRadius: 16, // softer, more rounded
+    borderRadius: 16,
     paddingHorizontal: 14,
     height: 48,
     marginBottom: 16,
-    // optional subtle shadow
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
-    elevation: 2, // Android shadow
+    elevation: 2,
   },
   icon: {
     marginRight: 8,

@@ -22,9 +22,9 @@ export default function InputBox({
 
 const styles = StyleSheet.create({
   input: {
-    flex: 1, // fill remaining space inside row
+    flex: 1,
     fontSize: 16,
     color: "#333",
-    paddingVertical: 12, // balanced padding
+    paddingVertical: 12,
   },
 });
