@@ -52,7 +52,6 @@ export default function OTPScreen({ route, navigation }) {
     } catch (error) {
       console.error(error);
       if (error.response) {
-        // Server responded with a status code
         ToastAndroid.show(
           `Verification failed: ${error.response.status} ${
             error.response.data?.message || ""

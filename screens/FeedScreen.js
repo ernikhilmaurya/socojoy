@@ -6,6 +6,8 @@ import HandPickedCarousel from "../components/HandPickedCarousel";
 import LiveEventsSection from "../components/LiveEventsSection";
 import PopularChefsSection from "../components/PopularChefsSection";
 import BestRecipesSection from "../components/BestRecipesSection";
+import ChefsSpecialSection from "../components/ChefsSpecialSection";
+import FoodCategories from "../components/FoodCategories";
 
 export default function FeedScreen() {
   return (
@@ -24,6 +26,8 @@ export default function FeedScreen() {
       <PopularChefsSection />
       <LiveEventsSection />
       <BestRecipesSection />
+      <ChefsSpecialSection />
+      <FoodCategories />
     </ScrollView>
   );
 }
