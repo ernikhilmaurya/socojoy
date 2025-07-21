@@ -8,6 +8,11 @@ import PopularChefsSection from "../components/PopularChefsSection";
 import BestRecipesSection from "../components/BestRecipesSection";
 import ChefsSpecialSection from "../components/ChefsSpecialSection";
 import FoodCategories from "../components/FoodCategories";
+import CuisineCategoryGrid from "../components/CuisineCategoryGrid";
+import IngredientStories from "../components/IngredientStories";
+import SeasonalSpecialSection from "../components/SeasonalSpecialSection";
+import PopularNearYouSection from "../components/PopularNearYouSection";
+import CookingTipsSection from "../components/CookingTipsSection";
 
 export default function FeedScreen() {
   return (
@@ -28,6 +33,11 @@ export default function FeedScreen() {
       <BestRecipesSection />
       <ChefsSpecialSection />
       <FoodCategories />
+      <CuisineCategoryGrid />
+      <SeasonalSpecialSection />
+      <IngredientStories />
+      <PopularNearYouSection />
+      <CookingTipsSection videoUri="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
     </ScrollView>
   );
 }

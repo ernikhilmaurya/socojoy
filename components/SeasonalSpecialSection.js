@@ -30,12 +30,12 @@ const recipes = [
   },
 ];
 
-export default function BestRecipesSection() {
+export default function SeasonalSpecialSection() {
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.headerRow}>
-        <Text style={styles.heading}>Besttt Recipes</Text>
+        <Text style={styles.heading}>Seasonal Special</Text>
         <TouchableOpacity>
           <Text style={styles.seeAll}>See All</Text>
         </TouchableOpacity>
