@@ -4,6 +4,7 @@ import SplashScreen from "../screens/SplashScreen";
 import LoginScreen from "../screens/LoginScreen";
 import OTPScreen from "../screens/OTPScreen";
 import FeedScreen from "../screens/FeedScreen";
+import RecipeDetailScreen from "../screens/RecipeDetailScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -14,6 +15,7 @@ export default function StackNavigator() {
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="OTP" component={OTPScreen} />
       <Stack.Screen name="Feed" component={FeedScreen} />
+      <Stack.Screen name="Recipe" component={RecipeDetailScreen} />
     </Stack.Navigator>
   );
 }
