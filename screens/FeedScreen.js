@@ -37,7 +37,7 @@ export default function FeedScreen() {
       <SeasonalSpecialSection />
       <IngredientStories />
       <PopularNearYouSection />
-      {/* <CookingTipsSection videoUri="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" /> */}
+      <CookingTipsSection videoUri="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
     </ScrollView>
   );
 }

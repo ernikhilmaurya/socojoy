@@ -6,8 +6,10 @@ import {
   Image,
   StyleSheet,
   Dimensions,
+  TouchableOpacity,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");
 
@@ -30,10 +32,10 @@ const events = [
     thumbnail: "https://picsum.photos/200?random=6",
     userProfile: "https://picsum.photos/50?random=16",
   },
-  // add more...
 ];
 
 export default function LiveEventsSection() {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Live Events</Text>
@@ -44,34 +46,30 @@ export default function LiveEventsSection() {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
         renderItem={({ item }) => (
-          <View style={styles.card}>
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => navigation.navigate("LiveEvent", { event: item })}
+            activeOpacity={0.8}
+          >
             <Image source={{ uri: item.thumbnail }} style={styles.thumbnail} />
-
-            {/* Play icon overlay */}
             <View style={styles.playIconContainer}>
               <Ionicons name="play-circle" size={36} color="#fff" />
             </View>
-
-            {/* Live badge */}
             <View style={styles.liveBadge}>
               <Text style={styles.liveText}>LIVE</Text>
             </View>
-
-            {/* User profile bottom center */}
             <View style={styles.userProfileContainer}>
               <Image
                 source={{ uri: item.userProfile }}
                 style={styles.userProfile}
               />
             </View>
-
-            {/* Bottom overlay text */}
             <View style={styles.overlay}>
               <Text style={styles.title} numberOfLines={2}>
                 {item.title}
               </Text>
             </View>
-          </View>
+          </TouchableOpacity>
         )}
       />
     </View>

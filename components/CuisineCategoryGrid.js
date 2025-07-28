@@ -7,12 +7,15 @@ import {
   ScrollView,
   Dimensions,
   FlatList,
+  TouchableOpacity,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const windowWidth = Dimensions.get("window").width;
 const CARD_SIZE = (windowWidth - 16 * 2 - 12 * 3) / 4; // 4 columns with gaps and padding
 
 export default function CuisineCategoryGrid() {
+  const navigation = useNavigation();
   const sections = [
     {
       title: "Cuisine Type",
@@ -56,10 +59,18 @@ export default function CuisineCategoryGrid() {
   ];
 
   const renderCard = ({ item }) => (
-    <View style={styles.card}>
+    <TouchableOpacity
+      style={styles.card}
+      onPress={() =>
+        navigation.navigate("CategoryScreen", {
+          category: item.title,
+          categoryType: "Diet", // You can pass different types based on section
+        })
+      }
+    >
       <Image source={{ uri: item.image }} style={styles.image} />
       <Text style={styles.label}>{item.title}</Text>
-    </View>
+    </TouchableOpacity>
   );
 
   return (

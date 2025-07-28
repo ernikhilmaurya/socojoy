@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { Video } from "expo-av";
 
-const CARD_SIZE = Dimensions.get("window").width / 2 - 24;
+const CARD_SIZE = Dimensions.get("window").width - 100;
 
 export default function CookingTipsSection({ videoUri }) {
   const videoRef = useRef(null);
@@ -24,20 +24,22 @@ export default function CookingTipsSection({ videoUri }) {
       <View style={styles.headerRow}>
         <Text style={styles.heading}>🍳 Cooking Tips</Text>
       </View>
-      <TouchableOpacity onPress={handleFullscreen} activeOpacity={0.9}>
-        <View style={styles.card}>
-          <Video
-            ref={videoRef}
-            source={{ uri: videoUri }}
-            style={styles.video}
-            resizeMode="cover"
-            shouldPlay
-            isLooping
-            isMuted
-            useNativeControls={false}
-          />
-        </View>
-      </TouchableOpacity>
+      <View style={styles.cardWrapper}>
+        <TouchableOpacity onPress={handleFullscreen} activeOpacity={0.9}>
+          <View style={styles.card}>
+            <Video
+              ref={videoRef}
+              source={{ uri: videoUri }}
+              style={styles.video}
+              resizeMode="cover"
+              shouldPlay
+              isLooping
+              isMuted
+              useNativeControls={false}
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -67,6 +69,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+  },
+  cardWrapper: {
+    alignItems: "center", // centers the card horizontally
   },
   video: {
     width: "100%",

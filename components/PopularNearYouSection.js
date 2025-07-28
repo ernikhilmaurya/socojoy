@@ -3,61 +3,40 @@ import {
   View,
   Text,
   Image,
-  Modal,
   StyleSheet,
-  TouchableOpacity,
   Dimensions,
-  FlatList,
   Animated,
-  StatusBar,
+  TouchableOpacity,
 } from "react-native";
 
-const { width, height } = Dimensions.get("window");
+const CARD_SIZE = Dimensions.get("window").width - 100;
+const CARD_WIDTH = CARD_SIZE;
+const CARD_HEIGHT = CARD_SIZE;
 const STORY_DURATION = 5000;
 
 const dummyData = [
   {
     id: "1",
     title: "Avocado",
-    stories: [
-      { id: "a1", image: "https://picsum.photos/400?random=41" },
-      { id: "a2", image: "https://picsum.photos/400?random=42" },
-    ],
+    image: "https://picsum.photos/400?random=51",
   },
   {
     id: "2",
     title: "Spinach",
-    stories: [
-      { id: "s1", image: "https://picsum.photos/400?random=43" },
-      { id: "s2", image: "https://picsum.photos/400?random=44" },
-    ],
+    image: "https://picsum.photos/400?random=52",
   },
   {
     id: "3",
-    title: "Avocado",
-    stories: [
-      { id: "a1", image: "https://picsum.photos/400?random=41" },
-      { id: "a2", image: "https://picsum.photos/400?random=42" },
-    ],
-  },
-  {
-    id: "4",
-    title: "Spinach",
-    stories: [
-      { id: "s1", image: "https://picsum.photos/400?random=43" },
-      { id: "s2", image: "https://picsum.photos/400?random=44" },
-    ],
+    title: "Blueberry",
+    image: "https://picsum.photos/400?random=53",
   },
 ];
 
 export default function PopularNearYouSection() {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [currentIngredientIndex, setCurrentIngredientIndex] = useState(0);
-  const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
+  const [index, setIndex] = useState(0);
   const progress = useRef(new Animated.Value(0)).current;
 
-  const ingredient = dummyData[currentIngredientIndex];
-  const stories = ingredient?.stories || [];
+  const ingredient = dummyData[index];
 
   const startProgress = () => {
     progress.setValue(0);
@@ -66,212 +45,130 @@ export default function PopularNearYouSection() {
       duration: STORY_DURATION,
       useNativeDriver: false,
     }).start(({ finished }) => {
-      if (finished) handleNextStory();
+      if (finished) {
+        setIndex((prev) => (prev + 1) % dummyData.length);
+      }
     });
   };
 
-  const handleNextStory = () => {
-    if (currentStoryIndex < stories.length - 1) {
-      setCurrentStoryIndex((prev) => prev + 1);
-    } else if (currentIngredientIndex < dummyData.length - 1) {
-      setCurrentIngredientIndex((prev) => prev + 1);
-      setCurrentStoryIndex(0);
-    } else {
-      closeModal();
-    }
-  };
-
-  const handlePrevStory = () => {
-    if (currentStoryIndex > 0) {
-      setCurrentStoryIndex((prev) => prev - 1);
-    } else if (currentIngredientIndex > 0) {
-      const prevIndex = currentIngredientIndex - 1;
-      setCurrentIngredientIndex(prevIndex);
-      setCurrentStoryIndex(dummyData[prevIndex].stories.length - 1);
-    }
-  };
-
-  const openModal = (index) => {
-    setCurrentIngredientIndex(index);
-    setCurrentStoryIndex(0);
-    setModalVisible(true);
-  };
-
-  const closeModal = () => {
-    setModalVisible(false);
-    setCurrentStoryIndex(0);
-    setCurrentIngredientIndex(0);
-  };
-
   useEffect(() => {
-    if (modalVisible) startProgress();
-  }, [currentStoryIndex, currentIngredientIndex, modalVisible]);
+    startProgress();
+  }, [index]);
 
   return (
-    <>
-      {/* Title above horizontal story scroll */}
+    <View style={styles.container}>
       <Text style={styles.sectionTitle}>Popular Near You</Text>
+      <View style={styles.cardWrapper}>
+        <View style={styles.card}>
+          <Image source={{ uri: ingredient.image }} style={styles.image} />
 
-      {/* Horizontal preview cards */}
-      <FlatList
-        horizontal
-        data={dummyData}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={{ paddingHorizontal: 10 }}
-        showsHorizontalScrollIndicator={false}
-        renderItem={({ item, index }) => (
-          <TouchableOpacity
-            style={styles.storyCard}
-            onPress={() => openModal(index)}
-          >
-            <Image
-              source={{ uri: item.stories[0].image }}
-              style={styles.image}
-            />
-            <Text style={styles.label}>{item.title}</Text>
-          </TouchableOpacity>
-        )}
-      />
-
-      {/* Fullscreen Story View */}
-      <Modal visible={modalVisible} animationType="fade" transparent={false}>
-        <StatusBar hidden />
-
-        <View style={styles.modalContainer}>
-          {/* Background Story Image */}
-          <Image
-            source={{ uri: stories[currentStoryIndex].image }}
-            style={styles.fullscreenImage}
-          />
-
-          {/* Timer Bars */}
-          <View style={styles.progressContainer}>
-            {stories.map((_, idx) => (
-              <View key={idx} style={styles.progressBar}>
+          <View style={styles.overlay}>
+            <View style={styles.topOverlay}>
+              <View style={styles.progressBar}>
                 <Animated.View
                   style={[
                     styles.progressFill,
-                    idx === currentStoryIndex && {
+                    {
                       width: progress.interpolate({
                         inputRange: [0, 1],
                         outputRange: ["0%", "100%"],
                       }),
                     },
-                    idx < currentStoryIndex && { width: "100%" },
                   ]}
                 />
               </View>
-            ))}
-          </View>
 
-          {/* Ingredient Title at top-left */}
-          <Text style={styles.storyTitle}>{ingredient.title}</Text>
+              <View style={styles.titleWrapper}>
+                <Text style={styles.title}>{ingredient.title}</Text>
+              </View>
+            </View>
 
-          {/* Close button */}
-          <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
-            <Text style={styles.closeText}>✕</Text>
-          </TouchableOpacity>
-
-          {/* Tappable overlays for swipe navigation */}
-          <View style={styles.overlayButtons}>
-            <TouchableOpacity style={styles.left} onPress={handlePrevStory} />
-            <TouchableOpacity style={styles.right} onPress={handleNextStory} />
+            <TouchableOpacity style={styles.orderButton} activeOpacity={0.8}>
+              <Text style={styles.orderButtonText}>Order Now</Text>
+            </TouchableOpacity>
           </View>
         </View>
-      </Modal>
-    </>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 20,
+    marginTop: 20,
+  },
   sectionTitle: {
     fontSize: 18,
     fontWeight: "700",
-    paddingHorizontal: 16,
-    marginTop: 20,
-    marginBottom: 10,
-  },
-  storyCard: {
-    alignItems: "center",
-    marginRight: 12,
-  },
-  image: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    borderWidth: 2,
-    borderColor: "#FF6347",
-  },
-  label: {
-    marginTop: 6,
-    fontSize: 13,
-    fontWeight: "500",
+    marginBottom: 12,
     color: "#333",
   },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: "#000",
-    justifyContent: "center",
-    alignItems: "center",
+  card: {
+    width: CARD_WIDTH,
+    height: CARD_HEIGHT,
+    borderRadius: 16,
+    overflow: "hidden",
+    backgroundColor: "#eee",
   },
-  fullscreenImage: {
-    width: width,
-    height: height,
+  cardWrapper: {
+    alignItems: "center", // centers the card horizontally
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  },
+  overlay: {
     position: "absolute",
     top: 0,
     left: 0,
-    resizeMode: "cover",
-  },
-  progressContainer: {
-    flexDirection: "row",
-    position: "absolute",
-    top: 40,
-    left: 10,
-    right: 10,
+    right: 0,
+    bottom: 0,
     justifyContent: "space-between",
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+  },
+  topOverlay: {
+    // To group title and progress bar
   },
   progressBar: {
-    flex: 1,
-    height: 3,
-    backgroundColor: "rgba(255,255,255,0.3)",
-    marginHorizontal: 2,
-    borderRadius: 3,
+    height: 4,
+    backgroundColor: "rgba(255,255,255,0.4)",
+    borderRadius: 4,
+    overflow: "hidden",
+    marginBottom: 8,
   },
   progressFill: {
-    height: 3,
+    height: 4,
     backgroundColor: "#fff",
+    borderRadius: 4,
   },
-  overlayButtons: {
-    flexDirection: "row",
-    position: "absolute",
-    top: 0,
-    height: "100%",
-    width: "100%",
+  titleWrapper: {
+    backgroundColor: "rgba(0,0,0,0.5)",
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    alignSelf: "flex-start",
   },
-  left: {
-    flex: 1,
-  },
-  right: {
-    flex: 1,
-  },
-  closeButton: {
-    position: "absolute",
-    top: 40,
-    right: 16,
-    padding: 10,
-    zIndex: 10,
-  },
-  closeText: {
-    color: "#fff",
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  storyTitle: {
-    position: "absolute",
-    top: 70,
-    left: 16,
-    color: "#fff",
+  title: {
     fontSize: 18,
+    fontWeight: "700",
+    color: "#fff",
+    textShadowColor: "rgba(0, 0, 0, 0.6)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+  },
+  orderButton: {
+    alignSelf: "center",
+    backgroundColor: "#FF5A5F",
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+  },
+  orderButtonText: {
+    color: "#fff",
     fontWeight: "600",
+    fontSize: 16,
   },
 });
